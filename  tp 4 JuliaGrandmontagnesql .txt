@@ -1,0 +1,636 @@
+Last login: Tue Oct 22 10:13:20 on ttys000
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+MacBook-Air-2:~ juliagrandmontagne$ sudo mysql;
+Password:
+Sorry, try again.
+Password:
+Sorry, try again.
+Password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 19
+Server version: 11.5.2-MariaDB Homebrew
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+5 rows in set (0,026 sec)
+
+MariaDB [(none)]> CREATE DATABASE compta CHARACTER SET utf8 COLLATE utf8_general_ci;
+Query OK, 1 row affected (0,005 sec)
+
+MariaDB [(none)]> USE compta;
+Database changed
+MariaDB [compta]> CREATE TABLE ARTICLE (
+    ->     ID INT AUTO_INCREMENT PRIMARY KEY,
+    ->     REF VARCHAR(50) NOT NULL,
+    ->     DESIGNATION VARCHAR(100) NOT NULL,
+    ->     PRIX DECIMAL(10, 2) NOT NULL,
+    ->     ID_FOU INT,
+    ->     FOREIGN KEY (ID_FOU) REFERENCES FOURNISSEUR(ID)
+    -> );
+ERROR 1005 (HY000): Can't create table `compta`.`article` (errno: 150 "Foreign key constraint is incorrectly formed")
+MariaDB [compta]> CREATE TABLE FOURNISSEUR (
+    ->     ID INT AUTO_INCREMENT PRIMARY KEY,
+    ->     NOM VARCHAR(100) NOT NULL
+    -> );
+Query OK, 0 rows affected (0,130 sec)
+
+MariaDB [compta]> CREATE TABLE BON (
+    ->     ID INT AUTO_INCREMENT PRIMARY KEY,
+    ->     NUMERO VARCHAR(50) NOT NULL,
+    ->     DATE_CMDE DATE NOT NULL,
+    ->     DELAI INT NOT NULL,
+    ->     ID_FOU INT,
+    ->     FOREIGN KEY (ID_FOU) REFERENCES FOURNISSEUR(ID)
+    -> );
+Query OK, 0 rows affected (0,151 sec)
+
+MariaDB [compta]> SHOW TABLES;
++------------------+
+| Tables_in_compta |
++------------------+
+| BON              |
+| FOURNISSEUR      |
++------------------+
+2 rows in set (0,016 sec)
+
+MariaDB [compta]> CREATE TABLE COMPO (
+    ->     ID INT AUTO_INCREMENT PRIMARY KEY,
+    ->     QTE INT NOT NULL,
+    ->     ID_ART INT,
+    ->     ID_BON INT,
+    ->     FOREIGN KEY (ID_ART) REFERENCES ARTICLE(ID),
+    ->     FOREIGN KEY (ID_BON) REFERENCES BON(ID)
+    -> );
+ERROR 1005 (HY000): Can't create table `compta`.`compo` (errno: 150 "Foreign key constraint is incorrectly formed")
+MariaDB [compta]> CREATE TABLE ARTICLE (
+    ->     ID INT AUTO_INCREMENT PRIMARY KEY,
+    ->     REF VARCHAR(50) NOT NULL,
+    ->     DESIGNATION VARCHAR(100) NOT NULL,
+    ->     PRIX DECIMAL(10, 2) NOT NULL,
+    ->     ID_FOU INT,
+    ->     FOREIGN KEY (ID_FOU) REFERENCES FOURNISSEUR(ID)
+    -> );
+Query OK, 0 rows affected (0,092 sec)
+
+MariaDB [compta]> CREATE TABLE COMPO (
+    ->     ID INT AUTO_INCREMENT PRIMARY KEY,
+    ->     QTE INT NOT NULL,
+    ->     ID_ART INT,
+    ->     ID_BON INT,
+    ->     FOREIGN KEY (ID_ART) REFERENCES ARTICLE(ID),
+    ->     FOREIGN KEY (ID_BON) REFERENCES BON(ID)
+    -> );
+Query OK, 0 rows affected (0,138 sec)
+
+MariaDB [compta]> SHOW TABLES;
++------------------+
+| Tables_in_compta |
++------------------+
+| ARTICLE          |
+| BON              |
+| COMPO            |
+| FOURNISSEUR      |
++------------------+
+4 rows in set (0,001 sec)
+
+MariaDB [compta]> DESCRIBE ARTICLE;
++-------------+---------------+------+-----+---------+----------------+
+| Field       | Type          | Null | Key | Default | Extra          |
++-------------+---------------+------+-----+---------+----------------+
+| ID          | int(11)       | NO   | PRI | NULL    | auto_increment |
+| REF         | varchar(50)   | NO   |     | NULL    |                |
+| DESIGNATION | varchar(100)  | NO   |     | NULL    |                |
+| PRIX        | decimal(10,2) | NO   |     | NULL    |                |
+| ID_FOU      | int(11)       | YES  | MUL | NULL    |                |
++-------------+---------------+------+-----+---------+----------------+
+5 rows in set (0,034 sec)
+
+MariaDB [compta]> DESCRIBE FOURNISSEUR;
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| ID    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| NOM   | varchar(100) | NO   |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+2 rows in set (0,031 sec)
+
+MariaDB [compta]> DESCRIBE BON;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| ID        | int(11)     | NO   | PRI | NULL    | auto_increment |
+| NUMERO    | varchar(50) | NO   |     | NULL    |                |
+| DATE_CMDE | date        | NO   |     | NULL    |                |
+| DELAI     | int(11)     | NO   |     | NULL    |                |
+| ID_FOU    | int(11)     | YES  | MUL | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+5 rows in set (0,037 sec)
+
+MariaDB [compta]> DESCRIBE COMPO;
++--------+---------+------+-----+---------+----------------+
+| Field  | Type    | Null | Key | Default | Extra          |
++--------+---------+------+-----+---------+----------------+
+| ID     | int(11) | NO   | PRI | NULL    | auto_increment |
+| QTE    | int(11) | NO   |     | NULL    |                |
+| ID_ART | int(11) | YES  | MUL | NULL    |                |
+| ID_BON | int(11) | YES  | MUL | NULL    |                |
++--------+---------+------+-----+---------+----------------+
+4 rows in set (0,005 sec)
+
+MariaDB [compta]> ALTER TABLE ARTICLE
+    -> ADD CONSTRAINT fk_article_fournisseur FOREIGN KEY (ID_FOU) REFERENCES FOURNISSEUR(ID);
+Query OK, 0 rows affected (0,289 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta]> ALTER TABLE BON
+    -> ADD CONSTRAINT fk_bon_fournisseur FOREIGN KEY (ID_FOU) REFERENCES FOURNISSEUR(ID);
+Query OK, 0 rows affected (0,273 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta]> ALTER TABLE COMPO
+    -> ADD CONSTRAINT fk_compo_article FOREIGN KEY (ID_ART) REFERENCES ARTICLE(ID),
+    -> ADD CONSTRAINT fk_compo_bon FOREIGN KEY (ID_BON) REFERENCES BON(ID);
+Query OK, 0 rows affected (0,240 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta]> INSERT INTO FOURNISSEUR (ID, NOM) VALUES
+    -> (1, 'Française d’Imports'),
+    -> (2, 'FDM SA'),
+    -> (3, 'Dubois & Fils');
+Query OK, 3 rows affected (0,031 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [compta]> INSERT INTO ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) VALUES
+    -> (1, 'A01', 'Perceuse P1', 74.99, 1),
+    -> (2, 'F01', 'Boulon laiton 4 x 40 mm (sachet de 10)', 2.25, 2),
+    -> (3, 'F02', 'Boulon laiton 5 x 40 mm (sachet de 10)', 4.45, 2),
+    -> (4, 'D01', 'Boulon laiton 5 x 40 mm (sachet de 10)', 4.40, 3),
+    -> (5, 'A02', 'Meuleuse 125mm', 37.85, 1),
+    -> (6, 'D03', 'Boulon acier zingué 4 x 40mm (sachet de 10)', 1.80, 3),
+    -> (7, 'A03', 'Perceuse à colonne', 185.25, 1),
+    -> (8, 'D04', 'Coffret mèches à bois', 12.25, 3),
+    -> (9, 'F03', 'Coffret mèches plates', 6.25, 2),
+    -> (10, 'F04', 'Fraises d’encastrement', 8.14, 2);
+Query OK, 10 rows affected (0,018 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [compta]> INSERT INTO BON (NUMERO, DATE_CMDE, DELAI, ID_FOU) VALUES
+    -> ('001', CURDATE(), 3, 1);
+Query OK, 1 row affected (0,005 sec)
+
+MariaDB [compta]> INSERT INTO COMPO (QTE, ID_ART, ID_BON) VALUES
+    -> (3, 1, LAST_INSERT_ID()),  -- 3 perceuses P1
+    -> (4, 5, LAST_INSERT_ID()),  -- 4 meuleuses 125mm
+    -> 
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 3
+MariaDB [compta]> INSERT INTO COMPO (QTE, ID_ART, ID_BON) VALUES
+    -> (3, 1, LAST_INSERT_ID()), 
+    -> (4, 5, LAST_INSERT_ID()), 
+    -> (1, 7, LAST_INSERT_ID()); 
+Query OK, 3 rows affected (0,005 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [compta]> select database();
++------------+
+| database() |
++------------+
+| compta     |
++------------+
+1 row in set (0,001 sec)
+
+MariaDB [compta]> exit;
+Bye
+MacBook-Air-2:~ juliagrandmontagne$ mysql -u julia -p
+Enter password: 
+ERROR 1045 (28000): Access denied for user 'julia'@'localhost' (using password: YES)
+MacBook-Air-2:~ juliagrandmontagne$ mysql -u julia -p
+Enter password: 
+ERROR 1045 (28000): Access denied for user 'julia'@'localhost' (using password: YES)
+MacBook-Air-2:~ juliagrandmontagne$ mysql -u julia -p
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 25
+Server version: 11.5.2-MariaDB Homebrew
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> sudo mysql ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'sudo mysql' at line 1
+MariaDB [(none)]> exit
+Bye
+MacBook-Air-2:~ juliagrandmontagne$ sudo mysql;
+Password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 37
+Server version: 11.5.2-MariaDB Homebrew
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> select user();
++----------------+
+| user()         |
++----------------+
+| root@localhost |
++----------------+
+1 row in set (0,000 sec)
+
+MariaDB [(none)]> alter user root@'%' identified by 'root' ;
+ERROR 1396 (HY000): Operation ALTER USER failed for 'root'@'%'
+MariaDB [(none)]> alter user 'root'@'%' identified by 'root' ;
+ERROR 1396 (HY000): Operation ALTER USER failed for 'root'@'%'
+MariaDB [(none)]> SELECT CURRENT_USER();
++----------------+
+| CURRENT_USER() |
++----------------+
+| root@localhost |
++----------------+
+1 row in set (0,001 sec)
+
+MariaDB [(none)]> mariadb -h localhost -u root -pnom_utilisateur;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'mariadb -h localhost -u root -pnom_utilisateur' at line 1
+MariaDB [(none)]> exit
+Bye
+MacBook-Air-2:~ juliagrandmontagne$ mariadb -h localhost -u root -pnom_utilisateur
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+MacBook-Air-2:~ juliagrandmontagne$ mariadb -h localhost -u root -pnom_utilisateur;
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+MacBook-Air-2:~ juliagrandmontagne$ sudo mysql;
+Password:
+Sorry, try again.
+Password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 40
+Server version: 11.5.2-MariaDB Homebrew
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('[admin]');
+Query OK, 0 rows affected (0,028 sec)
+
+MariaDB [(none)]> ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('root');
+Query OK, 0 rows affected (0,022 sec)
+
+MariaDB [(none)]> exit
+Bye
+MacBook-Air-2:~ juliagrandmontagne$  mysql -u root -p ;
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 41
+Server version: 11.5.2-MariaDB Homebrew
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SHOW TABLES
+    -> SHOW TABLES;
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> SHOW TABLES ;
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> mysql -u root -p 
+    -> mysql -u root -p ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'mysql -u root -p 
+mysql -u root -p' at line 1
+MariaDB [(none)]> mysql -u root -p ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'mysql -u root -p' at line 1
+MariaDB [(none)]> sudo mysql;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'sudo mysql' at line 1
+MariaDB [(none)]> exit;
+Bye
+MacBook-Air-2:~ juliagrandmontagne$ sudo mysql
+Password:
+Sorry, try again.
+Password:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+MacBook-Air-2:~ juliagrandmontagne$ sudo mysql
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+MacBook-Air-2:~ juliagrandmontagne$ exit
+logout
+
+Saving session...
+...copying shared history...
+...saving history...truncating history files...
+...completed.
+
+[Opération terminée]
+Last login: Tue Oct 22 10:13:58 on ttys000
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+MacBook-Air-2:~ juliagrandmontagne$  mysql -u root -p ;
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 51
+Server version: 11.5.2-MariaDB Homebrew
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show table
+    -> SHOW TABLES ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SHOW TABLES' at line 2
+MariaDB [(none)]>  SHOW TABLES;
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> SHOW TABLES
+    -> 
+    -> ;
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| compta             |
+| compta2            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+7 rows in set (0,003 sec)
+
+MariaDB [(none)]> use compta2;
+Database changed
+MariaDB [compta2]> show tables;
+Empty set (0,001 sec)
+
+MariaDB [compta2]> CREATE TABLE ARTICLE (ID int NOT NULL PRIMARY KEY, REF varchar(13) NOT NULL, DESIGNATION varchar(255) NOT NULL, PRIX decimal(7,2) NOT NULL, ID_FOU int NOT NULL);
+Query OK, 0 rows affected (0,105 sec)
+
+MariaDB [compta2]> CREATE TABLE FOURNISSEUR (ID int NOT NULL PRIMARY KEY, NOM varchar(25) NOT NULL);
+Query OK, 0 rows affected (0,126 sec)
+
+MariaDB [compta2]> CREATE TABLE BON (ID int NOT NULL PRIMARY KEY, NUMERO int, DATE_CMDE DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, DELAI int, ID_FOU int not null);
+Query OK, 0 rows affected (0,100 sec)
+
+MariaDB [compta2]> CREATE TABLE COMPO (ID int NOT NULL AUTO_INCREMENT PRIMARY KEY, ID_ART int, ID_BON int, QTE int);
+Query OK, 0 rows affected (0,108 sec)
+
+MariaDB [compta2]> ALTER TABLE ARTICLE add constraint FK_ARTICLE_FOU FOREIGN KEY  (ID_FOU) REFERENCES FOURNISSEUR(ID) ;
+Query OK, 0 rows affected (0,290 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta2]> ALTER TABLE BON add constraint FK_BON_FOU FOREIGN KEY (ID_FOU) REFERENCES FOURNISSEUR(ID) ;
+Query OK, 0 rows affected (0,300 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta2]> ALTER TABLE COMPO add constraint FK_COMPO_ART FOREIGN KEY (ID_ART) REFERENCES ARTICLE(ID) ;
+Query OK, 0 rows affected (0,248 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta2]> ALTER TABLE COMPO add constraint FK_COMPO_BON FOREIGN KEY (ID_BON) REFERENCES BON(ID) ;
+Query OK, 0 rows affected (0,261 sec)              
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [compta2]> Insert into FOURNISSEUR (ID, NOM) values (1, 'Française d''Imports') ;
+Query OK, 1 row affected (0,016 sec)
+
+MariaDB [compta2]> Insert into FOURNISSEUR (ID, NOM) values (2, 'FDM SA') ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into FOURNISSEUR (ID, NOM) values (3, 'Dubois & Fils') ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (1, 'A01', 'Perceuse P1', 74.99, 1) ;
+Query OK, 1 row affected (0,015 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (2, 'F01', 'Boulon laiton 4 x 40 mm (sachet de 10)', 2.25, 2) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (3, 'F02', 'Boulon laiton 5 x 40 mm (sachet de 10)', 4.45, 2) ;
+Query OK, 1 row affected (0,005 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (4, 'D01', 'Boulon laiton 5 x 40 mm (sachet de 10)', 4.4, 3) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (5, 'A02', 'Meuleuse 125mm', 37.85, 1) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (6, 'D03', 'Boulon acier zingué 4 x 40mm (sachet de 10)', 1.8, 3) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (7, 'A03', 'Perceuse à colonne', 185.25, 1) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (8, 'D04', 'Coffret mêches à bois', 12.25, 3) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (9, 'F03', 'Coffret mêches plates', 6.25, 2) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> Insert into ARTICLE (ID, REF, DESIGNATION, PRIX, ID_FOU) values (10, 'F04', 'Fraises d’encastrement', 8.14, 2) ;
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> 
+MariaDB [compta2]> insert into BON (ID, NUMERO, DELAI, ID_FOU, DATE_CMDE) VALUES (1, 1, 3, 1, '2019-02-08 09:30:00');
+Query OK, 1 row affected (0,022 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (1, 1, 3);
+Query OK, 1 row affected (0,004 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (5, 1, 4);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (7, 1, 1);
+Query OK, 1 row affected (0,002 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> 
+MariaDB [compta2]> insert into BON (ID, NUMERO, DELAI, ID_FOU, DATE_CMDE) VALUES (2, 2, 5, 2, '2019-03-02 09:30:00');
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (2, 2, 25);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (3, 2, 15);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (9, 2, 8);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (10, 2, 11);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> insert into BON (ID, NUMERO, DELAI, ID_FOU, DATE_CMDE) VALUES (3, 3, 2, 3, '2019-04-03 17:30:00');
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (4, 3, 25);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (6, 3, 40);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (8, 3, 15);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> insert into BON (ID, NUMERO, DELAI, ID_FOU, DATE_CMDE) VALUES (4, 4, 2, 3, '2019-04-05 11:40:00');
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (4, 4, 10);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (6, 4, 15);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (8, 4, 8);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> insert into BON (ID, NUMERO, DELAI, ID_FOU, DATE_CMDE) VALUES (5, 5, 7, 2, '2019-05-15 14:45:00');
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (2, 5, 17);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (3, 5, 13);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> insert into COMPO (ID_ART, ID_BON, QTE) values (10, 5, 9);
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> insert into BON (ID, NUMERO, DELAI, ID_FOU, DATE_CMDE) VALUES (6, 6, 0, 1, '2019-06-24 18:55:00');
+Query OK, 1 row affected (0,001 sec)
+
+MariaDB [compta2]> 
+MariaDB [compta2]> 
+MariaDB [compta2]> 
+MariaDB [compta2]> SHOW TABLES ;
++-------------------+
+| Tables_in_compta2 |
++-------------------+
+| ARTICLE           |
+| BON               |
+| COMPO             |
+| FOURNISSEUR       |
++-------------------+
+4 rows in set (0,001 sec)
+
+MariaDB [compta2]> SELECT * FROM ARTICLE;
++----+-----+----------------------------------------------+--------+--------+
+| ID | REF | DESIGNATION                                  | PRIX   | ID_FOU |
++----+-----+----------------------------------------------+--------+--------+
+|  1 | A01 | Perceuse P1                                  |  74.99 |      1 |
+|  2 | F01 | Boulon laiton 4 x 40 mm (sachet de 10)       |   2.25 |      2 |
+|  3 | F02 | Boulon laiton 5 x 40 mm (sachet de 10)       |   4.45 |      2 |
+|  4 | D01 | Boulon laiton 5 x 40 mm (sachet de 10)       |   4.40 |      3 |
+|  5 | A02 | Meuleuse 125mm                               |  37.85 |      1 |
+|  6 | D03 | Boulon acier zingué 4 x 40mm (sachet de 10)  |   1.80 |      3 |
+|  7 | A03 | Perceuse à colonne                           | 185.25 |      1 |
+|  8 | D04 | Coffret mêches à bois                        |  12.25 |      3 |
+|  9 | F03 | Coffret mêches plates                        |   6.25 |      2 |
+| 10 | F04 | Fraises d’encastrement                       |   8.14 |      2 |
++----+-----+----------------------------------------------+--------+--------+
+10 rows in set (0,001 sec)
+
+MariaDB [compta2]> SELECT REF, DESIGNATION FROM ARTICLE WHERE PRIX > 2;
++-----+----------------------------------------+
+| REF | DESIGNATION                            |
++-----+----------------------------------------+
+| A01 | Perceuse P1                            |
+| F01 | Boulon laiton 4 x 40 mm (sachet de 10) |
+| F02 | Boulon laiton 5 x 40 mm (sachet de 10) |
+| D01 | Boulon laiton 5 x 40 mm (sachet de 10) |
+| A02 | Meuleuse 125mm                         |
+| A03 | Perceuse à colonne                     |
+| D04 | Coffret mêches à bois                  |
+| F03 | Coffret mêches plates                  |
+| F04 | Fraises d’encastrement                 |
++-----+----------------------------------------+
+9 rows in set (0,002 sec)
+
+MariaDB [compta2]> SELECT * FROM ARTICLE WHERE PRIX >= 2 AND PRIX <= 6.25;
++----+-----+----------------------------------------+------+--------+
+| ID | REF | DESIGNATION                            | PRIX | ID_FOU |
++----+-----+----------------------------------------+------+--------+
+|  2 | F01 | Boulon laiton 4 x 40 mm (sachet de 10) | 2.25 |      2 |
+|  3 | F02 | Boulon laiton 5 x 40 mm (sachet de 10) | 4.45 |      2 |
+|  4 | D01 | Boulon laiton 5 x 40 mm (sachet de 10) | 4.40 |      3 |
+|  9 | F03 | Coffret mêches plates                  | 6.25 |      2 |
++----+-----+----------------------------------------+------+--------+
+4 rows in set (0,000 sec)
+
+MariaDB [compta2]> SELECT * FROM ARTICLE WHERE PRIX BETWEEN 2 AND 6.25;
++----+-----+----------------------------------------+------+--------+
+| ID | REF | DESIGNATION                            | PRIX | ID_FOU |
++----+-----+----------------------------------------+------+--------+
+|  2 | F01 | Boulon laiton 4 x 40 mm (sachet de 10) | 2.25 |      2 |
+|  3 | F02 | Boulon laiton 5 x 40 mm (sachet de 10) | 4.45 |      2 |
+|  4 | D01 | Boulon laiton 5 x 40 mm (sachet de 10) | 4.40 |      3 |
+|  9 | F03 | Coffret mêches plates                  | 6.25 |      2 |
++----+-----+----------------------------------------+------+--------+
+4 rows in set (0,001 sec)
+
+MariaDB [compta2]> SELECT * FROM ARTICLE WHERE PRIX NOT BETWEEN 2 AND 6.25 AND ID_FOU = (SELECT ID FROM FOURNISSEUR WHERE NOM = 'Française d''Imports');
++----+-----+---------------------+--------+--------+
+| ID | REF | DESIGNATION         | PRIX   | ID_FOU |
++----+-----+---------------------+--------+--------+
+|  1 | A01 | Perceuse P1         |  74.99 |      1 |
+|  5 | A02 | Meuleuse 125mm      |  37.85 |      1 |
+|  7 | A03 | Perceuse à colonne  | 185.25 |      1 |
++----+-----+---------------------+--------+--------+
+3 rows in set (0,005 sec)
+
+MariaDB [compta2]> SELECT * FROM ARTICLE WHERE ID_FOU IN ( SELECT ID FROM FOURNISSEUR WHERE NOM IN ('Française d''Imports', 'Dubois & Fils') );
++----+-----+----------------------------------------------+--------+--------+
+| ID | REF | DESIGNATION                                  | PRIX   | ID_FOU |
++----+-----+----------------------------------------------+--------+--------+
+|  1 | A01 | Perceuse P1                                  |  74.99 |      1 |
+|  5 | A02 | Meuleuse 125mm                               |  37.85 |      1 |
+|  7 | A03 | Perceuse à colonne                           | 185.25 |      1 |
+|  4 | D01 | Boulon laiton 5 x 40 mm (sachet de 10)       |   4.40 |      3 |
+|  6 | D03 | Boulon acier zingué 4 x 40mm (sachet de 10)  |   1.80 |      3 |
+|  8 | D04 | Coffret mêches à bois                        |  12.25 |      3 |
++----+-----+----------------------------------------------+--------+--------+
+6 rows in set (0,001 sec)
+
+MariaDB [compta2]> SELECT * FROM ARTICLE WHERE ID_FOU NOT IN ( SELECT ID FROM FOURNISSEUR WHERE NOM IN ('Française d''Imports', 'Dubois & Fils') );
++----+-----+----------------------------------------+------+--------+
+| ID | REF | DESIGNATION                            | PRIX | ID_FOU |
++----+-----+----------------------------------------+------+--------+
+|  2 | F01 | Boulon laiton 4 x 40 mm (sachet de 10) | 2.25 |      2 |
+|  3 | F02 | Boulon laiton 5 x 40 mm (sachet de 10) | 4.45 |      2 |
+|  9 | F03 | Coffret mêches plates                  | 6.25 |      2 |
+| 10 | F04 | Fraises d’encastrement                 | 8.14 |      2 |
++----+-----+----------------------------------------+------+--------+
+4 rows in set (0,001 sec)
+
+MariaDB [compta2]> SELECT * FROM BON WHERE DATE_CMDE BETWEEN '2019-02-01' AND '2019-04-30';
++----+--------+---------------------+-------+--------+
+| ID | NUMERO | DATE_CMDE           | DELAI | ID_FOU |
++----+--------+---------------------+-------+--------+
+|  1 |      1 | 2019-02-08 09:30:00 |     3 |      1 |
+|  2 |      2 | 2019-03-02 09:30:00 |     5 |      2 |
+|  3 |      3 | 2019-04-03 17:30:00 |     2 |      3 |
+|  4 |      4 | 2019-04-05 11:40:00 |     2 |      3 |
++----+--------+---------------------+-------+--------+
+4 rows in set (0,000 sec)
+
+MariaDB [compta2]> 
